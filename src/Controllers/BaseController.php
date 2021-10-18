@@ -2,12 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\Role;
 use App\Traits\Authenticate;
 use App\Traits\Config;
-use App\Traits\CSRF;
-use App\Traits\HasPermission;
-use App\Traits\HasRole;
 
 /**
  * abstract Class BaseController

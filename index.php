@@ -19,18 +19,40 @@ date_default_timezone_set('Asia/Almaty');
 //print_r($_SERVER);die;
 //print_r($_SESSION);
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
-    $r->addRoute('GET', '/login', function () {
-//        require_once 'info.php';
-        $controller = new App\Controllers\UserController();
-        $controller->index();
-    });
-    $r->addRoute('GET', '/users', function () {
-        $controller = new App\Controllers\UserController();
-        $controller->get();
-    });
+
+    // Главная страница
     $r->addRoute('GET', '/', function () {
+        //require_once 'info.php';
         $controller = new App\Controllers\TaskController();
         $controller->index();
+    });
+
+    // Роуты Авторизации
+    $r->addRoute('POST', '/login', function () {
+        $controller = new App\Controllers\LoginController;
+        $controller->login();
+    });
+    $r->addRoute('GET', '/login', function () {
+        $controller = new App\Controllers\LoginController;
+        $controller->loginView();
+    });
+    $r->addRoute('GET', '/logout', function () {
+        $controller = new App\Controllers\LoginController;
+        $controller->logout();
+    });
+
+    // Роуты Задач
+    $r->addRoute('POST', '/task/add', function () {
+        $controller = new App\Controllers\TaskController();
+        $controller->add();
+    });
+    $r->addRoute('POST', '/task/edit', function () {
+        $controller = new App\Controllers\TaskController();
+        $controller->edit();
+    });
+    $r->addRoute('GET', '/task/add', function () {
+        $controller = new App\Controllers\TaskController();
+        $controller->create();
     });
 });
 

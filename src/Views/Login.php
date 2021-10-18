@@ -13,30 +13,31 @@ class Login extends Base
     public function container($data = [])
     {
         ?>
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Авторизация</div>
-                    <div class="card-body">
-                        <form>
-                        <div class="mb-3">
-                        <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-            </div>
-            <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
-            </div>
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-
+        <?php $this->header(); //print_r($data);die; ?>
+        <section class="bg-light block">
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-header">Авторизация</div>
+                            <div class="card-body">
+                                <form id="form-login" action="/login" method="post">
+                                   <div class="mb-3">
+                                       <label for="exampleInputEmail" class="form-label">Электронная почта</label>
+                                       <input type="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp">
+                                   </div>
+                                   <div class="mb-3">
+                                       <label for="exampleInputPassword" class="form-label">Пароль</label>
+                                       <input type="password" class="form-control" id="exampleInputPassword">
+                                   </div>
+                                   <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-
+        </section>
+        <?php $this->footer() ?>
         <?php
-
     }
 }

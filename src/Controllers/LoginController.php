@@ -12,7 +12,7 @@ use App\Views\Login;
  * Class UserController
  * @package App\Controllers
  */
-class UserController extends BaseController
+class LoginController extends BaseController
 {
 
     /**
@@ -32,29 +32,22 @@ class UserController extends BaseController
     /**
      * show users
      */
-    public function get()
+    public function login()
     {
+        var_dump("asdas");die;
         $user_model = new User();
-
         $users = $user_model->getUsers();
         var_dump($users);die;
 
-        $view = new User();
-        $view->render([
-            'role_slug'=>$this->role['role_slug'],
-            '_token'=>$this->_token,
-            'cities'=>(new City())->getCities(),
-            'roles'=>$roles,
-            'users' => $this->model->getUsers()
-        ]);
     }
 
     /**
-     * show index
+     * Авторизация
      */
-    public function index()
+    public function loginView()
     {
-        $this->view->render([
-        ]);
+        $this->view->render();
+
     }
+
 }
