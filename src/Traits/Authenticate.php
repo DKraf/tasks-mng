@@ -11,8 +11,7 @@ trait Authenticate
 
     /**
      * проверяем авторизованного юзера
-     */
-    protected function authorize()
+     */    protected function authorize()
     {
         $this->auth = $_SESSION['user'];
         if(!$this->auth) {

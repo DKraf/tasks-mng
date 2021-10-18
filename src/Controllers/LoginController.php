@@ -3,7 +3,6 @@
 
 namespace App\Controllers;
 
-use App\Models\Base;
 use App\Models\User;
 use App\Views\Login;
 
@@ -16,38 +15,61 @@ class LoginController extends BaseController
 {
 
     /**
-     * @var Base $model
+     * @var User $model
      */
-    private Base $model;
+
+    private User $model;
     private Login $view;
 
     public function __construct()
     {
         parent::__construct();
-        $this->model = new Base();
+        $this->model = new User();
         $this->view = new Login();
 
     }
 
-    /**
-     * show users
-     */
-    public function login()
-    {
-        var_dump("asdas");die;
-        $user_model = new User();
-        $users = $user_model->getUsers();
-        var_dump($users);die;
-
-    }
 
     /**
      * Авторизация
      */
+    public function auth()
+    {
+        $data = [];
+        if (!$_POST) {
+            $_SESSION['error'] = 'Что-то пошло не так! Попробуйте снова!';
+        } else {
+            $data= [
+                'email' => trim($_POST['email']),
+                'password' => md5(trim($_POST['password']))
+            ];
+            $user = $this->model->auth($data);
+            if ($user) {
+                $_SESSION['auth'] = $user;
+            } else {
+                $_SESSION['error'] = 'Пользователь не найден!';
+            }
+        }
+        header('Location: /');
+    }
+
+
+    /**
+     * Выход с учетки
+     */
+    public function logout()
+    {
+        unset($_SESSION['auth']);
+        header('Location: /');
+    }
+
+
+    /**
+     * Вьюшка авторизации
+     */
     public function loginView()
     {
         $this->view->render();
-
     }
 
 }

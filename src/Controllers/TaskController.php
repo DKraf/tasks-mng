@@ -7,7 +7,8 @@ use App\Models\Base;
 use App\Models\Task as ModelTask;
 use App\Views\Task;
 use App\Views\TaskCreate;
-
+use App\Views\TaskEdit;
+use App\Traits\Validation;
 
 /**
  * Class UserController
@@ -31,7 +32,7 @@ class TaskController extends BaseController
 
 
     /**
-     * show index
+     * Список задач
      */
     public function index()
     {
@@ -47,8 +48,14 @@ class TaskController extends BaseController
         $sort = @$_GET['sort'];
         if (array_key_exists($sort, $sort_list)) {
             $sort_table = $sort_list[$sort];
+            $_SESSION['sort'] = $sort_list[$sort];
         } else {
-            $sort_table = 'id'. ' ' .'asc';
+            if (isset($_GET['page']) && isset($_SESSION['sort'])) {
+                $sort_table = $_SESSION['sort'];
+            } else {
+                unset($_SESSION['sort']);
+                $sort_table = 'id' . ' ' . 'asc';
+            }
         }
 
         $page = isset($_GET['page']) ? $_GET['page'] : 1;
@@ -62,10 +69,7 @@ class TaskController extends BaseController
         $count = $this->model->getTasksCount();
         $temp_count = $count[0]['count'] / $limit;
         $page_count = ceil($temp_count);
-        if ($page > $page_count) {
-            Errors::show_error_page();
-            die;
-        }
+
         $data = [
             'count' => $count[0]['count'],
             'page'  => $page_count,
@@ -75,16 +79,60 @@ class TaskController extends BaseController
         $this->view->render($data);
     }
 
+
+    /**
+     * Добавление новой задачи
+     */
     public function add()
     {
-        echo "add";die;
+        if ($_POST) {
+            $in_data = [
+                'name' => $_POST['name'],
+                'email' => $_POST['email'],
+                'task' => $_POST['task']
+            ];
+            $valid= new Validation();
+            $data = $valid->validate($in_data);
+            $result = $this->model->addTask($data);
+            if ($result) {
+                $_SESSION['success'] = 'Задача успешно создана!';
+            } else {
+                $_SESSION['error'] = 'Что-то пошло не так! Попробуйте снова!';
+            }
+            header('Location: /');
+        }
     }
 
 
+    /**
+     * Редактирование задачи
+     */
     public function edit()
     {
-        echo "edit";die;
+        if ($_SESSION['auth']['name'] !== 'admin') {
+            exit(header('Location: /login'));
+        } else {
+            if ($_POST) {
+                $data = [
+                    'text'   => $_POST['text'],
+                    'active' => $_POST['active'],
+                    'id'     =>$_POST['id']
+                ];
+                $result = $this->model->update_task($data);
+                if ($result === true){
+                    $_SESSION['success'] = 'Запись успешно обновлена!';
+                    header('Location: /');
+                }else {
+                    $_SESSION['error'] = 'Что-то пошло не так! Попробуйте снова!';
+                    header('Location: /edit-task');
+                }
+            }else {
+                $_SESSION['error'] = 'Ошибка в полученных данных!';
+                header('Location: /edit-task');
+            }
+        }
     }
+
 
     /**
      * Вызов вьюхи создания заявки
@@ -95,12 +143,20 @@ class TaskController extends BaseController
         $task_view->render();
     }
 
-    public function show_home()
+
+    /**
+     * Вьюшка редактирования задачи
+     * @param $id
+     */
+    public function showEditTask($id)
     {
-        $data['token'] = Authenticate::csrf();
-        $data['page'] = $this->pageCount;
-        $data['tasks'] = $model->get_tasks($limit, $offset, $sort_table);
-        $view = new \App\View\Home();
+        $data = [];
+        if ($_SESSION['auth']['name'] !== 'admin') {
+            exit(header('Location: /login'));
+        } else {
+            $data = $this->model->getTaskByID($id);
+        }
+        $view = new TaskEdit();
         $view->render($data);
     }
 }

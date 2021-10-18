@@ -13,6 +13,18 @@ class Task extends Base
     {
         ?>
         <?php $this->header(); //print_r($data);die; ?>
+        <?php if(isset($_SESSION['success'])): ?>
+            <div class="alert alert-success" role="alert">
+                <?php echo $_SESSION['success']; ?>
+            </div>
+            <?php unset($_SESSION['success']); ?>
+        <?php endif; ?>
+        <?php if(isset($_SESSION['error'])): ?>
+            <div class="alert alert-danger" role="alert">
+                <?php echo $_SESSION['error']; ?>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+        <?php endif; ?>
         <section class="bg-light block">
         <div class="d-flex justify-content-center pb-3">
             <div class="col-sm-3">
@@ -36,7 +48,9 @@ class Task extends Base
                         <th scope="col">Эл. почта</th>
                         <th scope="col">Текст</th>
                         <th scope="col">Статус заявки</th>
-
+                        <?php if($_SESSION['auth']['name'] === 'admin')
+                            echo '<th scope="col">Действие</th>';
+                        ?>
                     </tr>
                     </thead>
                     <tbody>
@@ -46,7 +60,13 @@ class Task extends Base
                         <td><?php echo $task['name']; ?></td>
                         <td><?php echo $task['email']; ?></td>
                         <td><?php echo $task['text']; ?></td>
-                        <td><?php echo ((bool)$task['active']) ?  'Активна' :  'Закрыта'; ?></td>
+                        <td><?php echo ((bool)$task['active']) ?  'В работе' :  'Выполнена'; ?></td>
+                        <?php if($_SESSION['auth']['name'] === 'admin'):?>
+                             <td><form method="get" action="/task-edit/<?=$task['id'];?>">
+                                     <button class="btn btn-outline-success" type="submit">Edit</button>
+                                 </form>
+                             </td>
+                        <?php endif; ?>
                     </tr>
                     <?php endforeach; ?>
                     </tbody>

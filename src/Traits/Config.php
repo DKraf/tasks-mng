@@ -26,8 +26,7 @@ trait Config
                 return $array[$key];
             }
         } else {
-            $file = require_once 'config/'.$string.'.php';
-            return $file;
+            return require_once 'config/'.$string.'.php';
         }
     }
 }

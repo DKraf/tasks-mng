@@ -21,15 +21,15 @@ class Login extends Base
                         <div class="card-header">Авторизация</div>
                             <div class="card-body">
                                 <form id="form-login" action="/login" method="post">
-                                   <div class="mb-3">
-                                       <label for="exampleInputEmail" class="form-label">Электронная почта</label>
-                                       <input type="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp">
-                                   </div>
+                                    <div class="mb-3">
+                                        <label for="exampleInputEmail"  class="form-label">Электронная почта</label>
+                                        <input type="email" name="email" class="form-control" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="somethig@email.com">
+                                    </div>
                                    <div class="mb-3">
                                        <label for="exampleInputPassword" class="form-label">Пароль</label>
-                                       <input type="password" class="form-control" id="exampleInputPassword">
+                                       <input type="password" name="password" class="form-control" id="exampleInputPassword">
                                    </div>
-                                   <button type="submit" class="btn btn-primary">Submit</button>
+                                   <button type="submit" class="btn btn-primary">Авторизоваться</button>
                                 </form>
                             </div>
                         </div>

@@ -14,12 +14,12 @@ class Task extends Base
      * @param array $data
      * @return bool
      */
-    public function addTask(array $data)
+    public function addTask(array $data): bool
     {
         $db = $this->db->get();
         $stmt = $db->prepare("
             INSERT INTO
-                tasks (                
+                task (                
                     email,
                     text,
                     active,
@@ -33,19 +33,47 @@ class Task extends Base
                 )
             ");
         return $stmt->execute([
-            ':email' => $data['email'],
-            ':text' => $data['text'],
-            ':active'=>$data['active'],
-            ':name'=> $data['name']
+            ':email'  => $data['email'],
+            ':text'   => $data['task'],
+            ':active' => 1,
+            ':name'   => $data['name']
         ]);
     }
 
 
     /**
+     * Запрос на получение обновление задачи
+     * @param array $data
+     * @return mixed
+     */
+    public function update_task(array $data)
+    {
+        $id = $data['id'];
+        $db = $this->db->get();
+        $stmt = $db->prepare("
+            UPDATE 
+                task
+            SET 
+                text = :text,
+                active = :active
+            WHERE id = $id
+            ");
+        $result = $stmt->execute([
+            ':text'=>$data['text'],
+            ':active'=>$data['active']
+        ]);
+        return $result;
+    }
+
+
+    /**
      * Запрос на получение всех задач
+     * @param $limit
+     * @param int $offset
+     * @param $sort
      * @return array
      */
-    public function getTasks($limit, $offset=0, $sort) : array
+    public function getTasks($limit, int $offset = 0, $sort) : array
     {
         $db = $this->db->get();
         $stmt = $db->prepare("
@@ -63,7 +91,32 @@ class Task extends Base
         return $stmt->fetchAll();
     }
 
-    public function getTasksCount()
+
+    /**
+     *  Запрос на получение нужной задачи
+     * @param $id
+     * @return mixed
+     */
+    public function getTaskByID($id)
+    {
+        $db = $this->db->get();
+        $stmt = $db->prepare("
+            SELECT *
+                FROM
+                    task
+                WHERE
+                    id = :id
+        ");
+        $stmt->execute([':id' => $id]);
+        return $stmt->fetch();
+    }
+
+
+    /**
+     * Запрос на получение колличество записей для пагинатора
+     * @return array
+     */
+    public function getTasksCount(): array
     {
         $db = $this->db->get();
         $stmt = $db->prepare("
@@ -74,6 +127,5 @@ class Task extends Base
         ");
         $stmt->execute();
         return $stmt->fetchAll();
-
     }
 }

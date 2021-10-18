@@ -10,15 +10,27 @@ class User extends Base
 {
 
     /**
-     * получаем всех юзеров
-     * @return array
+     * Запрос на получение пользователя
+     * @param array $data
+     * @return mixed
      */
-    public function getUsers() : array
+    public function auth(array $data)
     {
         $db = $this->db->get();
-        $stmt = $db->prepare("SELECT * FROM users");
-        $stmt->execute();
-        $a = $stmt->fetchAll();
-        var_dump($a);   die;
+        $stmt = $db->prepare("
+            SELECT 
+                name
+            FROM
+                users
+            WHERE 
+                email = :email 
+            AND 
+                password = :password
+            ");
+        $stmt->execute([
+            ':email' => $data['email'],
+            ':password' => $data['password']
+        ]);
+        return $stmt->fetch();
     }
 }

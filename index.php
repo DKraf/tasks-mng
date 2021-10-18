@@ -30,7 +30,7 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
     // Роуты Авторизации
     $r->addRoute('POST', '/login', function () {
         $controller = new App\Controllers\LoginController;
-        $controller->login();
+        $controller->auth();
     });
     $r->addRoute('GET', '/login', function () {
         $controller = new App\Controllers\LoginController;
@@ -46,10 +46,15 @@ $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r) {
         $controller = new App\Controllers\TaskController();
         $controller->add();
     });
-    $r->addRoute('POST', '/task/edit', function () {
+    $r->addRoute('GET', '/task-edit/{id}', function($id) {
         $controller = new App\Controllers\TaskController();
-        $controller->edit();
+        $controller->showEditTask($id['id']);
     });
+        $r->addRoute('POST', '/update-task', function() {
+            $controller = new App\Controllers\TaskController();
+            $controller->edit();
+        });
+
     $r->addRoute('GET', '/task/add', function () {
         $controller = new App\Controllers\TaskController();
         $controller->create();
